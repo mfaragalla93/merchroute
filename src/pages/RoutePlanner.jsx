@@ -203,13 +203,11 @@ const RoutePlanner = () => {
         </div>
       ) : null}
 
-      {/*{result?.actions ? (*/}
-      {/*  <Paragraph>*/}
-      {/*    After completing the route, you can navigate back to the previous page*/}
-      {/*    using the button below or the navigation menu and select more bounties*/}
-      {/*    to complete.*/}
-      {/*  </Paragraph>*/}
-      {/*) : null}*/}
+      {result?.actions?.length && (
+        <Paragraph className="mt-10">
+          To modify your selections, you can go back to the previous page.
+        </Paragraph>
+      )}
     </Page>
   );
 };

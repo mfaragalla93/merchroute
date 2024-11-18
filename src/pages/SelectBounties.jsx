@@ -22,10 +22,9 @@ const SelectBounties = () => {
     >
       <Subheading>Your bounties</Subheading>
       <Paragraph>
-        The bounties you currently have. You can select up to six bounties. You
-        can change your merchanting level on the{" "}
-        <InternalLink to="/configuration">configuration page</InternalLink> to
-        see or hide bounties of a higher level.
+        Select bounties you currently have (up to 6 total). To see or hide
+        relevant bounties, change your merchanting level on the{" "}
+        <InternalLink to="/configuration">configuration page</InternalLink>.
       </Paragraph>
       <div className="grid grid-cols-3 gap-3 mb-5">
         {bounties
@@ -68,6 +67,10 @@ const SelectBounties = () => {
             />
           ))}
       </div>
+      <Paragraph className="mt-10">
+        After making your selections, continue to the next page to see the best
+        route.
+      </Paragraph>
     </Page>
   );
 };
