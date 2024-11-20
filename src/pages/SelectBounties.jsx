@@ -1,7 +1,7 @@
 import Page from "../components/Page.jsx";
 import Paragraph from "../components/Paragraph.jsx";
 import Subheading from "../components/Subheading.jsx";
-import Bounty from "../components/Bounty.jsx";
+import SelectableBounty from "../components/SelectableBounty.jsx";
 import useBounties from "../hooks/useBounties.js";
 import useSettings from "../hooks/useSettings.js";
 
@@ -12,16 +12,17 @@ import ExternalLink from "../components/ExternalLink.jsx";
 const SelectBounties = () => {
   const {
     bounties,
-    selectedBounties: selectedBounties,
-    selectBounty,
+    selectedBountiesCount,
+    setCount,
     reset: resetBounties,
-  } = useBounties("bounties");
+  } = useBounties("bountiesV2");
+
   const {
     bounties: availableBounties,
-    selectedBounties: selectedAvailableBounties,
-    selectBounty: selectAvailableBounty,
+    selectedBountiesCount: selectedAvailableBountiesCount,
+    setCount: setCountAvailable,
     reset: resetAvailableBounties,
-  } = useBounties("availableBounties");
+  } = useBounties("availableBountiesV2");
 
   const { merchantingLevel } = useSettings();
 
@@ -32,7 +33,8 @@ const SelectBounties = () => {
     >
       <Subheading>Your bounties</Subheading>
       <Paragraph className="mb-2 dark:text-zinc-300">
-        Select bounties you currently have (up to 6 total). To see or hide
+        Select bounties you currently have{" "}
+        <span className="font-bold">(up to 6 total).</span> To see or hide
         relevant bounties, change your merchanting level on the{" "}
         <InternalLink to="/configuration">configuration page</InternalLink>. Not
         all bounties have been discovered yet, so higher level ones may be
@@ -42,7 +44,7 @@ const SelectBounties = () => {
         and we will get them added.
       </Paragraph>
       <button
-        className={`text-blue-600 dark:text-blue-500 hover:underline font-medium text-sm mb-3 ${selectedBounties.length === 0 ? "invisible" : ""}`}
+        className={`text-blue-600 dark:text-blue-500 hover:underline font-medium text-sm mb-3 ${selectedBountiesCount.length === 0 ? "invisible" : ""}`}
         onClick={resetBounties}
       >
         Clear selections
@@ -55,11 +57,11 @@ const SelectBounties = () => {
               bountyData[bounty.key].level <= merchantingLevel,
           )
           .map((bounty) => (
-            <Bounty
+            <SelectableBounty
               key={bounty.key}
               bountyKey={bounty.key}
-              selected={bounty.selected}
-              onClick={() => selectBounty(bounty.key)}
+              count={bounty.selectedCount}
+              setCount={setCount}
             />
           ))}
       </div>
@@ -73,7 +75,7 @@ const SelectBounties = () => {
         which ones to pick up.
       </Paragraph>
       <button
-        className={`text-blue-600 dark:text-blue-500 hover:underline font-medium text-sm mb-3 ${selectedAvailableBounties.length === 0 ? "invisible" : ""}`}
+        className={`text-blue-600 dark:text-blue-500 hover:underline font-medium text-sm mb-3 ${selectedAvailableBountiesCount.length === 0 ? "invisible" : ""}`}
         onClick={resetAvailableBounties}
       >
         Clear selections
@@ -86,11 +88,12 @@ const SelectBounties = () => {
               bountyData[bounty.key].level <= merchantingLevel,
           )
           .map((bounty) => (
-            <Bounty
+            <SelectableBounty
               key={bounty.key}
               bountyKey={bounty.key}
-              selected={bounty.selected}
-              onClick={() => selectAvailableBounty(bounty.key)}
+              count={bounty.selectedCount}
+              setCount={setCountAvailable}
+              canSelectMoreThanOne={false}
             />
           ))}
       </div>
