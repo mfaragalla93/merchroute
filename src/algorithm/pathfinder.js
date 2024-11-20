@@ -116,11 +116,6 @@ class Pathfinder {
         actions: originalActions,
       } = pq.dequeue();
 
-      // Give up on paths that are too long
-      if (distance > threshold) {
-        return null;
-      }
-
       // Avoid mutating the original arrays by creating copies
       const bountyStates = [...originalBountyStates];
       const actions = [...originalActions];
@@ -195,6 +190,11 @@ class Pathfinder {
           distance: distanceAfterTrading,
         });
         bountyStates[i] = BountyStatus.IN_PROGRESS;
+      }
+
+      // Give up on paths that are too long
+      if (distanceAfterTrading > threshold) {
+        return null;
       }
 
       if (this.#deliveriesCompleted(bountyStates)) {
