@@ -44,7 +44,7 @@ const SelectBounties = () => {
         and we will get them added.
       </Paragraph>
       <button
-        className={`text-blue-600 dark:text-blue-500 hover:underline font-medium text-sm mb-3 ${selectedBountiesCount.length === 0 ? "invisible" : ""}`}
+        className={`text-blue-600 dark:text-blue-500 hover:underline font-medium text-sm mb-3 ${selectedBountiesCount === 0 ? "invisible" : ""}`}
         onClick={resetBounties}
       >
         Clear selections
@@ -75,7 +75,7 @@ const SelectBounties = () => {
         which ones to pick up.
       </Paragraph>
       <button
-        className={`text-blue-600 dark:text-blue-500 hover:underline font-medium text-sm mb-3 ${selectedAvailableBountiesCount.length === 0 ? "invisible" : ""}`}
+        className={`text-blue-600 dark:text-blue-500 hover:underline font-medium text-sm mb-3 ${selectedAvailableBountiesCount === 0 ? "invisible" : ""}`}
         onClick={resetAvailableBounties}
       >
         Clear selections
