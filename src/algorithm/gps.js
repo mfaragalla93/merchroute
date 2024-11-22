@@ -54,28 +54,36 @@ class GPS {
     distances.set(node1, 0);
 
     while (pq.size() > 0) {
-      const { distance: currentDistance, node: currentNode } = pq.dequeue();
+      const { node, distance } = pq.dequeue();
 
-      if (currentDistance > distances.get(currentNode)) {
+      if (node === node2) {
+        const path = this.#reconstructPath(previous, node1, node2);
+        return {
+          distance,
+          path,
+        };
+      }
+
+      if (distance > distances.get(node)) {
         continue;
       }
 
-      const neighbors = this.#adjacencyMap.get(currentNode);
+      const neighbors = this.#adjacencyMap.get(node);
       for (let [neighbor, weight] of neighbors) {
-        const distance = currentDistance + weight;
-        if (distance < distances.get(neighbor)) {
-          distances.set(neighbor, distance);
-          previous.set(neighbor, currentNode);
+        const newDistance = distance + weight;
 
-          pq.enqueue({ distance, node: neighbor });
-
-          if (neighbor === node2) {
-            return {
-              distance,
-              path: this.#reconstructPath(previous, node1, node2),
-            };
-          }
+        // Only consider this path if it improves the known shortest distance
+        if (newDistance >= distances.get(neighbor)) {
+          continue;
         }
+
+        distances.set(neighbor, newDistance);
+        previous.set(neighbor, node);
+
+        pq.enqueue({
+          node: neighbor,
+          distance: distance + weight,
+        });
       }
     }
 

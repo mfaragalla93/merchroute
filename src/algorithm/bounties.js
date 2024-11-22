@@ -179,6 +179,24 @@ export const bounties = {
     seller: markets.JANESSAS_DELICACIES,
     buyer: markets.BOGGS_ANTIQUES,
   },
+  BATH_SALTS: {
+    level: 132,
+    name: "Bath Salts",
+    seller: markets.SOAP_SHOP,
+    buyer: markets.MONOCLE_MARKET,
+  },
+  TOMATOES: {
+    level: 139,
+    name: "Tomatoes",
+    seller: markets.GREENGROCERS,
+    buyer: markets.CHEF,
+  },
+  STEAK: {
+    level: 144,
+    name: "Steak",
+    seller: markets.BUTCHERS_STALL,
+    buyer: markets.HALLIGS_STREET_FOOD,
+  },
 };
 
 /**
