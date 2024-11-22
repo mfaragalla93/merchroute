@@ -179,7 +179,7 @@ export const bounties = {
     seller: markets.JANESSAS_DELICACIES,
     buyer: markets.BOGGS_ANTIQUES,
   },
-  BATH_SALES: {
+  BATH_SALTS: {
     level: 132,
     name: "Bath Salts",
     seller: markets.SOAP_SHOP,
