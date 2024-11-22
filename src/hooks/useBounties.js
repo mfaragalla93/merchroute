@@ -6,7 +6,7 @@ const defaultBountyState = Object.fromEntries(
     key,
     {
       name: value.name,
-      selected: false,
+      selectedCount: 0,
     },
   ]),
 );
@@ -33,30 +33,41 @@ const useBounties = (key) => {
   }, [bountyObj]);
 
   const selectedBounties = useMemo(() => {
-    return bounties.filter((bounty) => bounty.selected);
+    return bounties.filter((bounty) => bounty.selectedCount > 0);
   }, [bounties]);
 
-  const selectBounty = (key) => {
-    if (selectedBounties.length >= 6 && !bountyObj[key].selected) {
+  const selectedBountiesCount = useMemo(() => {
+    return selectedBounties.reduce(
+      (acc, bounty) => acc + bounty.selectedCount,
+      0,
+    );
+  }, [selectedBounties]);
+
+  const setCount = (key, value) => {
+    if (selectedBountiesCount === 6 && bountyObj[key].selectedCount < value) {
       return;
     }
 
-    setBountyObj((bountyObj) => {
-      return {
-        ...bountyObj,
-        [key]: {
-          ...bountyObj[key],
-          selected: !bountyObj[key].selected,
-        },
-      };
-    });
+    setBountyObj((bountyObj) => ({
+      ...bountyObj,
+      [key]: {
+        ...bountyObj[key],
+        selectedCount: value,
+      },
+    }));
   };
 
   const reset = () => {
     setBountyObj(defaultBountyState);
   };
 
-  return { bounties, selectedBounties, selectBounty, reset };
+  return {
+    bounties,
+    selectedBounties,
+    selectedBountiesCount,
+    setCount,
+    reset,
+  };
 };
 
 export default useBounties;

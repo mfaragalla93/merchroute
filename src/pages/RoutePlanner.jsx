@@ -1,11 +1,11 @@
 import useBounties from "../hooks/useBounties.js";
 import Page from "../components/Page.jsx";
 import { useEffect, useMemo, useState } from "react";
-import Bounty from "../components/Bounty.jsx";
 import Subheading from "../components/Subheading.jsx";
 import useSettings from "../hooks/useSettings.js";
 import Paragraph from "../components/Paragraph.jsx";
 import InternalLink from "../components/InternalLink.jsx";
+import Bounty from "../components/Bounty.jsx";
 
 const worker = new Worker(new URL("../algorithm/worker.js", import.meta.url), {
   type: "module",
@@ -31,9 +31,10 @@ const RoutePlanner = () => {
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState({});
 
-  const { selectedBounties: bounties } = useBounties("bounties");
-  const { selectedBounties: availableBounties } =
-    useBounties("availableBounties");
+  const { selectedBounties: bounties } = useBounties("bountiesV2");
+  const { selectedBounties: availableBounties } = useBounties(
+    "availableBountiesV2",
+  );
 
   const { detectiveLevel, battleOfFortuneholdCompleted } = useSettings();
 
@@ -53,9 +54,23 @@ const RoutePlanner = () => {
     setResult({});
     setLoading(true);
 
+    const currentBountyKeys = [];
+    bounties.forEach((bounty) => {
+      for (let i = 0; i < bounty.selectedCount; i++) {
+        currentBountyKeys.push(bounty.key);
+      }
+    });
+
+    const availableBountyKeys = [];
+    availableBounties.forEach((bounty) => {
+      for (let i = 0; i < bounty.selectedCount; i++) {
+        availableBountyKeys.push(bounty.key);
+      }
+    });
+
     const message = {
-      currentBounties: bounties.map((bounty) => bounty.key),
-      availableBounties: availableBounties.map((bounty) => bounty.key),
+      currentBounties: currentBountyKeys,
+      availableBounties: availableBountyKeys,
       detectiveLevel: detectiveLevel === "" ? 0 : detectiveLevel,
       battleOfFortuneholdCompleted,
     };
@@ -75,12 +90,36 @@ const RoutePlanner = () => {
       return null;
     }
 
-    const bountiesToAbandon = bounties
-      .filter((bounty) => !result.bounties.includes(bounty.key))
-      .map((bounty) => bounty.key);
+    // Bounties we need
+    const need = {};
+    result.bounties.forEach((key) => {
+      if (!need[key]) {
+        need[key] = 1;
+      } else {
+        need[key]++;
+      }
+    });
 
-    console.log("bountiesToAbandon", bountiesToAbandon);
-    return bountiesToAbandon;
+    // Check for bounties we have selected that we don't need
+    const abandon = [];
+    bounties.forEach((bounty) => {
+      if (need[bounty.key]) {
+        for (let i = 0; i < bounty.selectedCount; i++) {
+          if (need[bounty.key] > 0) {
+            need[bounty.key]--;
+          } else {
+            abandon.push(bounty.key);
+          }
+        }
+      } else {
+        for (let i = 0; i < bounty.selectedCount; i++) {
+          abandon.push(bounty.key);
+        }
+      }
+    });
+
+    console.log("bountiesToAbandon", abandon);
+    return abandon;
   }, [bounties, result]);
 
   const bountiesToPickup = useMemo(() => {
@@ -88,19 +127,39 @@ const RoutePlanner = () => {
       return null;
     }
 
-    let bountiesToPickup = [];
-    let keys = bounties.map((bounty) => bounty.key);
+    // Bounties we need
+    const need = {};
     result.bounties.forEach((key) => {
-      if (keys.includes(key)) {
-        keys = keys.filter((k) => k !== key);
+      if (!need[key]) {
+        need[key] = 1;
       } else {
-        bountiesToPickup.push(key);
+        need[key]++;
       }
     });
 
-    console.log("bountiesToPickup", bountiesToPickup);
-    return bountiesToPickup;
-  }, [bounties, result]);
+    // Subtract the bounties we already have
+    bounties.forEach((bounty) => {
+      if (need[bounty.key]) {
+        need[bounty.key] -= bounty.selectedCount;
+      }
+    });
+
+    // And check which bounties we still need to pick up
+    const pickup = [];
+    availableBounties.forEach((bounty) => {
+      if (need[bounty.key]) {
+        for (let i = 0; i < bounty.selectedCount; i++) {
+          if (need[bounty.key] > 0) {
+            pickup.push(bounty.key);
+            need[bounty.key]--;
+          }
+        }
+      }
+    });
+
+    console.log("bountiesToPickup", pickup);
+    return pickup;
+  }, [bounties, availableBounties, result]);
 
   return (
     <Page title="Bounty Plan" meta="The best route based on your selections.">
@@ -125,9 +184,9 @@ const RoutePlanner = () => {
       {bountiesToAbandon?.length ? (
         <>
           <Subheading>Abandon</Subheading>
-          <div className="grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 mb-5">
-            {bountiesToAbandon.map((key) => (
-              <Bounty key={key} bountyKey={key} />
+          <div className="grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-5">
+            {bountiesToAbandon.map((key, index) => (
+              <Bounty key={`${key}-${index}`} bountyKey={key} />
             ))}
           </div>
         </>
@@ -136,28 +195,13 @@ const RoutePlanner = () => {
       {bountiesToPickup?.length ? (
         <>
           <Subheading>Pickup</Subheading>
-          <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 mb-5">
+          <div className="grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-5 mb-5">
             {bountiesToPickup.map((key) => (
               <Bounty key={key} bountyKey={key} />
             ))}
           </div>
         </>
       ) : null}
-
-      {/*{result ? (*/}
-      {/*  <>*/}
-      {/*    <Subheading>Route</Subheading>*/}
-      {/*    <Paragraph>*/}
-      {/*      After abandoning and/or picking up the bounties mentioned above,*/}
-      {/*      take the following route to complete them in the most efficient way:*/}
-      {/*    </Paragraph>*/}
-      {/*    /!*<div className="grid grid-cols-6 gap-0">*!/*/}
-      {/*    /!*  {data.deliveries.map((bounty) => (*!/*/}
-      {/*    /!*    <Bounty key={bounty} type={bounty} size="small" />*!/*/}
-      {/*    /!*  ))}*!/*/}
-      {/*    /!*</div>*!/*/}
-      {/*  </>*/}
-      {/*) : null}*/}
 
       {result?.actions?.length ? (
         <div className="relative overflow-x-auto my-7 whitespace-nowrap">
@@ -186,11 +230,7 @@ const RoutePlanner = () => {
                 >
                   <td className="py-3 capitalize">{action.type}</td>
                   <td className="py-3">
-                    {action.item ? (
-                      <Bounty bountyKey={action.item} size="small" />
-                    ) : (
-                      "-"
-                    )}
+                    {action.item ? <Bounty bountyKey={action.item} /> : "-"}
                   </td>
                   <td className="py-3 text-right">{action.location}</td>
                   <td className="py-3 text-right">

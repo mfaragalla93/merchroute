@@ -10,10 +10,10 @@ const Header = ({ setMobileMenuShown }) => {
         <div className="flex justify-between place-content-center">
           <div className="flex items-center place-content-center">
             <div
-              className="md:hidden mr-2 hover:bg-gray-200 rounded p-1 cursor-pointer"
+              className="md:hidden mr-2 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded p-1 cursor-pointer"
               onClick={() => setMobileMenuShown((shown) => !shown)}
             >
-              <Menu className="w-6 h-6" />
+              <Menu className="w-6 h-6 dark:text-white" />
             </div>
             <img
               src="android-chrome-192x192.png"
