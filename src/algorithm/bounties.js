@@ -197,6 +197,36 @@ export const bounties = {
     seller: markets.BUTCHERS_STALL,
     buyer: markets.HALLIGS_STREET_FOOD,
   },
+  BURGER: {
+    level: 153,
+    name: "Burger",
+    seller: markets.HALLIGS_STREET_FOOD,
+    buyer: markets.JENNALERS_WINES,
+  },
+  HAM_LEG: {
+    level: 158,
+    name: "Ham Leg",
+    seller: markets.HENDERSONS_MEAT,
+    buyer: markets.TOY_STALL,
+  },
+  CLOCKWORK_DRAGON: {
+    level: 165,
+    name: "Clockwork Dragon",
+    seller: markets.PENNYS_CLOCKWORK,
+    buyer: markets.CHEESE_SHOP,
+  },
+  SNOW_GLOBE: {
+    level: 170,
+    name: "Snow Globe",
+    seller: markets.TOY_STALL,
+    buyer: markets.TOMMY_SHOES_WINES,
+  },
+  CUPS: {
+    level: 179,
+    name: "Cups",
+    seller: markets.HERMARS_HOMEWARE,
+    buyer: markets.SOUVENIR_STALL,
+  },
 };
 
 /**
