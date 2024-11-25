@@ -227,6 +227,30 @@ export const bounties = {
     seller: markets.HERMARS_HOMEWARE,
     buyer: markets.SOUVENIR_STALL,
   },
+  POSTCARDS: {
+    level: 184,
+    name: "Postcards",
+    seller: markets.SOUVENIR_STALL,
+    buyer: markets.TEXTILES_STALL,
+  },
+  RHUBARB: {
+    level: 191,
+    name: "Rhubarb",
+    seller: markets.FORTUNEHOLD_FARM,
+    buyer: markets.SOAP_SHOP,
+  },
+  CURRY: {
+    level: 196,
+    name: "Curry",
+    seller: markets.CHEF,
+    buyer: markets.SNILCHS_WATCHES,
+  },
+  ORANGES: {
+    level: 216,
+    name: "Oranges",
+    seller: markets.FRANCESCAS_FRUIT_STALL,
+    buyer: markets.TEXTILES_STALL,
+  },
 };
 
 /**
