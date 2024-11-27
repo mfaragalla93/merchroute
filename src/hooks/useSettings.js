@@ -4,6 +4,7 @@ const defaultSettings = {
   merchantingLevel: 100, // Intentionally defaulted for now since higher levels have no images yet.
   detectiveLevel: 0,
   battleOfFortuneholdCompleted: false,
+  roundTrip: true,
 };
 
 const useSettings = () => {
@@ -28,6 +29,14 @@ const useSettings = () => {
     return settings.battleOfFortuneholdCompleted;
   }, [settings]);
 
+  const roundTrip = useMemo(() => {
+    if (settings.roundTrip === undefined) {
+      return true; // Default to true if not set (old settings)
+    }
+
+    return settings.roundTrip;
+  }, [settings]);
+
   const setMerchantingLevel = (merchantingLevel) => {
     setSettings((settings) => ({
       ...settings,
@@ -49,13 +58,22 @@ const useSettings = () => {
     }));
   };
 
+  const setRoundTrip = (roundTrip) => {
+    setSettings((settings) => ({
+      ...settings,
+      roundTrip,
+    }));
+  };
+
   return {
     merchantingLevel,
     detectiveLevel,
     battleOfFortuneholdCompleted,
+    roundTrip,
     setMerchantingLevel,
     setDetectiveLevel,
     setBattleOfFortuneholdCompleted,
+    setRoundTrip,
   };
 };
 

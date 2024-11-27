@@ -36,7 +36,8 @@ const RoutePlanner = () => {
     "availableBountiesV2",
   );
 
-  const { detectiveLevel, battleOfFortuneholdCompleted } = useSettings();
+  const { detectiveLevel, battleOfFortuneholdCompleted, roundTrip } =
+    useSettings();
 
   useEffect(() => {
     worker.onmessage = (event) => {
@@ -73,6 +74,7 @@ const RoutePlanner = () => {
       availableBounties: availableBountyKeys,
       detectiveLevel: detectiveLevel === "" ? 0 : detectiveLevel,
       battleOfFortuneholdCompleted,
+      roundTrip,
     };
 
     console.log("message", message);
@@ -83,6 +85,7 @@ const RoutePlanner = () => {
     availableBounties,
     detectiveLevel,
     battleOfFortuneholdCompleted,
+    roundTrip,
   ]);
 
   const bountiesToAbandon = useMemo(() => {

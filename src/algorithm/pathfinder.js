@@ -26,6 +26,7 @@ class Pathfinder {
    *   E.g, [CARROTS, SOAP, ...]
    * @param detectiveLevel Level of players Detective skill, used to determine any additional rooms which can be accessed
    * @param battleOfFortuneholdCompleted Whether the player has completed the Battle of Fortunehold quest which unlocks an additional room
+   * @param roundTrip Whether to return to the bounty board after completing all deliveries
    * @returns {
    *     {bounties: string[]},    // An array of keys from {@link bountyData} representing the best bounties to complete
    *     {actions:    string[]},  // An array of actions to take to complete the deliveries
@@ -37,6 +38,7 @@ class Pathfinder {
     availableBounties,
     detectiveLevel,
     battleOfFortuneholdCompleted,
+    roundTrip,
   ) {
     const result = {
       bounties: [],
@@ -68,7 +70,7 @@ class Pathfinder {
         0,
       );
 
-      const route = this.findBestRoute(combo, gps, result.distance);
+      const route = this.findBestRoute(combo, gps, result.distance, roundTrip);
       if (route === null) {
         // Route was not shorter than the current best
         return;
@@ -89,11 +91,12 @@ class Pathfinder {
    * @param bounties An array containing bounties {@link bountyData}. E.g, [CARROTS, SOAP, ...]
    * @param gps An instance of the GPS class
    * @param threshold This method will "give up" on paths that are longer than this distance
+   * @param roundTrip Whether to return to the bounty board after completing all deliveries
    * @returns {{actions: string[], distance: number} | null}
    *  Returns an object containing the actions to take and the total distance
    *  Returns null if no route is found that is shorter than the threshold
    */
-  findBestRoute(bounties, gps, threshold = Number.MAX_SAFE_INTEGER) {
+  findBestRoute(bounties, gps, threshold = Number.MAX_SAFE_INTEGER, roundTrip) {
     const pq = new PriorityQueue((a, b) => a.distance - b.distance);
     const visited = new Map();
 
@@ -109,7 +112,7 @@ class Pathfinder {
 
     while (pq.size() > 0) {
       const {
-        distance,
+        distance: originalDistance,
         previousNode,
         currentNode,
         bountyStates: originalBountyStates,
@@ -122,12 +125,15 @@ class Pathfinder {
 
       // Check if we have already found a shorter path to this location with the same deliveries
       const visitedKey = `${currentNode}-${bountyStates}`;
-      if (visited.has(visitedKey) && visited.get(visitedKey) <= distance) {
+      if (
+        visited.has(visitedKey) &&
+        visited.get(visitedKey) <= originalDistance
+      ) {
         continue;
       }
-      visited.set(visitedKey, distance);
+      visited.set(visitedKey, originalDistance);
 
-      let distanceAfterTrading = distance;
+      let distance = originalDistance;
       let numItemsBought = 0;
       let numItemsSold = 0;
 
@@ -148,13 +154,13 @@ class Pathfinder {
         }
 
         numItemsSold += 1;
-        distanceAfterTrading += this.timeToSell;
+        distance += this.timeToSell;
 
         actions.push({
           type: "sell",
           item: bounty,
           location: bountyData[bounty].buyer.name,
-          distance: distanceAfterTrading,
+          distance,
         });
         bountyStates[i] = BountyStatus.COMPLETED;
       }
@@ -179,7 +185,7 @@ class Pathfinder {
         }
 
         if (numItemsBought === 0) {
-          distanceAfterTrading += this.timeToBuy; // Buying more than one item takes no extra time
+          distance += this.timeToBuy; // Buying more than one item takes no extra time
         }
         numItemsBought += 1;
 
@@ -187,18 +193,34 @@ class Pathfinder {
           type: "buy",
           item: bounty,
           location: bountyData[bounty].seller.name,
-          distance: distanceAfterTrading,
+          distance: distance,
         });
         bountyStates[i] = BountyStatus.IN_PROGRESS;
       }
 
       // Give up on paths that are too long
-      if (distanceAfterTrading > threshold) {
+      if (distance > threshold) {
         return null;
       }
 
       if (this.#deliveriesCompleted(bountyStates)) {
-        return { actions, distance: distanceAfterTrading };
+        if (roundTrip && currentNode !== bountyBoard.node) {
+          distance += gps.distance(currentNode, bountyBoard.node).distance;
+          actions.push({
+            type: "Return",
+            location: bountyBoard.name,
+            distance,
+          });
+          pq.enqueue({
+            distance,
+            previousNode: currentNode,
+            currentNode: bountyBoard.node,
+            bountyStates,
+            actions,
+          });
+        } else {
+          return { actions, distance };
+        }
       }
 
       // Enqueue next purchase locations
@@ -212,7 +234,7 @@ class Pathfinder {
               nextNode,
             );
             pq.enqueue({
-              distance: distanceAfterTrading + nextDistance,
+              distance: distance + nextDistance,
               previousNode: currentNode,
               currentNode: nextNode,
               bountyStates,
@@ -231,7 +253,7 @@ class Pathfinder {
             nextNode,
           );
           pq.enqueue({
-            distance: distanceAfterTrading + nextDistance,
+            distance: distance + nextDistance,
             previousNode: currentNode,
             currentNode: nextNode,
             bountyStates,

@@ -22,7 +22,7 @@ class GPS {
    * Returns the shortest path between two nodes
    * @param node1 The name of a location. e.g, "Greengrocers"
    * @param node2 The name of a location. e.g, "Tanners Road"
-   * @returns {number} The shortest distance between the two locations
+   * @returns {{ distance: number, path: number[] }} The shortest distance between the two locations
    */
   distance(node1, node2) {
     const key = `${node1}-${node2}`;

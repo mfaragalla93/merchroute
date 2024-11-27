@@ -485,6 +485,8 @@ export const edges = [
   { nodes: [100, 102], weight: 1.6 },
   { nodes: [100, 103], weight: 8.23 },
 
+  { nodes: [102, 103], weight: 6.7 },
+
   { nodes: [105, 75], weight: 5.16, directed: true },
   { nodes: [105, 76], weight: 2.42, directed: true },
   { nodes: [105, 77], weight: 0.1, directed: true },

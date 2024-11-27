@@ -53,9 +53,11 @@ const Configuration = () => {
     merchantingLevel,
     detectiveLevel,
     battleOfFortuneholdCompleted,
+    roundTrip,
     setMerchantingLevel,
     setDetectiveLevel,
     setBattleOfFortuneholdCompleted,
+    setRoundTrip,
   } = useSettings();
 
   return (
@@ -118,19 +120,43 @@ const Configuration = () => {
         completed quests, or the tool will not take them into account.
       </Paragraph>
 
-      <div className="flex items-center mb-4">
+      <div className="flex items-center mb-4 select-none">
         <input
-          id="default-checkbox"
+          id="battle-of-fortunehold"
           type="checkbox"
           checked={battleOfFortuneholdCompleted}
           onChange={(e) => setBattleOfFortuneholdCompleted(e.target.checked)}
-          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
         />
         <label
-          htmlFor="default-checkbox"
-          className="ms-2 text-sm font-medium text-gray-900 dark:text-white"
+          htmlFor="battle-of-fortunehold"
+          className="ms-2 text-sm font-medium text-gray-900 dark:text-white cursor-pointer"
         >
           Battle of Fortunehold
+        </label>
+      </div>
+
+      <Subheading>Round Trips</Subheading>
+      <Paragraph>
+        If enabled, the tool will find the best route to complete all bounties
+        and return to the bounty board. This may be slightly different from the
+        fastest route to complete all bounties, but it is more efficient if you
+        plan on making multiple trips.
+      </Paragraph>
+
+      <div className="flex items-center mb-4 select-none">
+        <input
+          id="roundtrips"
+          type="checkbox"
+          checked={roundTrip}
+          onChange={(e) => setRoundTrip(e.target.checked)}
+          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+        />
+        <label
+          htmlFor="roundtrips"
+          className="ms-2 text-sm font-medium text-gray-900 dark:text-white cursor-pointer"
+        >
+          Round Trips
         </label>
       </div>
 
