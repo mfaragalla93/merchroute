@@ -7,6 +7,28 @@ import { bountyBoard, portals } from "./nodes.js";
 import { bounties as bountyData } from "./bounties.js";
 
 /**
+ * @typedef {Object} Action
+ * @property {string} type The type of action to take. E.g, "buy", "sell", "teleport", "walk"
+ * @property {string} item (Optional) The item to buy or sell
+ * @property {string} location The location to buy, sell, teleport, or walk to
+ * @property {number} distance The total distance (time in seconds) it will take to complete the action
+ *
+ */
+
+/**
+ * @typedef {Object} FindBestBountiesResult
+ * @property {string[]} bounties Keys from {@link bountyData} representing the best bounties to complete
+ * @property {Action[]} actions Actions to take to complete the bounties
+ * @property {number} distance The total distance (time in seconds) it will take to complete the bounties
+ */
+
+/**
+ * @typedef {Object} FindBestRouteResult
+ * @property {Action[]} actions Actions to take to complete the bounties
+ * @property {number} distance The total distance (time in seconds) it will take to complete the bounties
+ */
+
+/**
  * Determines the best route to take to make all deliveries
  */
 class Pathfinder {
@@ -18,20 +40,16 @@ class Pathfinder {
 
   /**
    * Determines which deliveries should be made based on current and available deliveries
-   * @param currentBounties An array of keys from {@link bountyData}
+   * @param {string[]} currentBounties An array of keys from {@link bountyData}
    *   These are be the bounties the player has already accepted
    *   E.g, [CARROTS, SOAP, ...]
-   * @param availableBounties (Optional) An array of keys from {@link bountyData}
+   * @param {string[]} [availableBounties] (Optional) An array of keys from {@link bountyData}
    *   These are the bounties the player has available but not yet accepted on the bounty board
    *   E.g, [CARROTS, SOAP, ...]
-   * @param detectiveLevel Level of players Detective skill, used to determine any additional rooms which can be accessed
-   * @param battleOfFortuneholdCompleted Whether the player has completed the Battle of Fortunehold quest which unlocks an additional room
-   * @param roundTrip Whether to return to the bounty board after completing all deliveries
-   * @returns {
-   *     {bounties: string[]},    // An array of keys from {@link bountyData} representing the best bounties to complete
-   *     {actions:    string[]},  // An array of actions to take to complete the deliveries
-   *     {distance:   number}     // The total distance (time in seconds) it will take to complete the bounties
-   * }
+   * @param {number} detectiveLevel Level of players Detective skill, used to determine any additional rooms which can be accessed
+   * @param {boolean} battleOfFortuneholdCompleted Whether the player has completed the Battle of Fortunehold quest which unlocks an additional room
+   * @param {boolean} roundTrip Whether to return to the bounty board after completing all deliveries
+   * @returns {FindBestBountiesResult[]} An array of objects containing the best bounties to complete
    */
   findBestBounties(
     currentBounties,
@@ -88,11 +106,11 @@ class Pathfinder {
 
   /**
    * Determines the shortest route to complete all deliveries
-   * @param bounties An array containing bounties {@link bountyData}. E.g, [CARROTS, SOAP, ...]
-   * @param gps An instance of the GPS class
-   * @param threshold This method will "give up" on paths that are longer than this distance
-   * @param roundTrip Whether to return to the bounty board after completing all deliveries
-   * @returns {{actions: string[], distance: number} | null}
+   * @param {string[]} bounties An array containing bounties {@link bountyData}. E.g, [CARROTS, SOAP, ...]
+   * @param {GPS} gps An instance of the GPS class
+   * @param {number} threshold This method will "give up" on paths that are longer than this distance
+   * @param {boolean} roundTrip Whether to return to the bounty board after completing all deliveries
+   * @returns {FindBestRouteResult | null}
    *  Returns an object containing the actions to take and the total distance
    *  Returns null if no route is found that is shorter than the threshold
    */
@@ -268,7 +286,7 @@ class Pathfinder {
    * Determines the number of overlapping merchants in a list of bounties
    * For example, [CARROTS, CARROTS] would have two overlapping merchants (GREENGROCERS & TOY_STALL)
    * While [CARROTS, PORCELAIN_DOLL] would have one overlapping merchant (TOY_STALL)
-   * @param bounties An array of bounty keys
+   * @param {string[]} bounties An array of bounty keys
    * @returns {number} The number of overlapping merchants
    */
   #getNumOverlappingMerchants = (bounties) => {
@@ -297,10 +315,10 @@ class Pathfinder {
 
   /**
    * Updates the actions array with individual steps to take to get from one location to another
-   * @param gps An instance of the GPS class
-   * @param actions An array of actions
-   * @param startNode Node of the starting location (reference {@link edges})
-   * @param endNode Name of the ending location, (reference {@link edges})
+   * @param {GPS} gps An instance of the GPS class
+   * @param {Action[]} actions An array of actions
+   * @param {number} startNode Node of the starting location (reference {@link edges})
+   * @param {number} endNode Name of the ending location, (reference {@link edges})
    */
   #addTravelSteps(gps, actions, startNode, endNode) {
     const { path } = gps.distance(startNode, endNode);
@@ -341,7 +359,7 @@ class Pathfinder {
 
   /**
    * Determines if more items can be purchased / carried in the inventory
-   * @param bountyStates An array of {@link BountyStatus} values representing the state of each bounty
+   * @param {number[]} bountyStates An array of {@link BountyStatus} values representing the state of each bounty
    * @returns {boolean} True if more items can be purchased, false otherwise
    */
   #canPurchaseMoreItems(bountyStates) {
@@ -358,7 +376,7 @@ class Pathfinder {
 
   /**
    * Determines if all deliveries have been completed
-   * @param bountyStates An array of {@link BountyStatus} values representing the state of each bounty
+   * @param {number[]} bountyStates An array of {@link BountyStatus} values representing the state of each bounty
    * @returns {boolean} True if all deliveries have been completed, false otherwise
    */
   #deliveriesCompleted(bountyStates) {

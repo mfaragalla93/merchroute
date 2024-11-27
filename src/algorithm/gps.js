@@ -2,6 +2,12 @@ import { PriorityQueue } from "@datastructures-js/priority-queue";
 import { edges, portals } from "./nodes.js";
 
 /**
+ * @typedef {Object} DistanceResult
+ * @property {number} distance The shortest distance between two nodes
+ * @property {number[]} path The path between the two nodes, where each number represents a node
+ */
+
+/**
  * Calculates the shortest path between two nodes
  * For more information on nodes, see:
  *    {@link markets}
@@ -20,9 +26,9 @@ class GPS {
 
   /**
    * Returns the shortest path between two nodes
-   * @param node1 The name of a location. e.g, "Greengrocers"
-   * @param node2 The name of a location. e.g, "Tanners Road"
-   * @returns {{ distance: number, path: number[] }} The shortest distance between the two locations
+   * @param {number} node1 The name of a location. e.g, "Greengrocers"
+   * @param {number} node2 The name of a location. e.g, "Tanners Road"
+   * @returns {DistanceResult} The shortest distance between the two locations
    */
   distance(node1, node2) {
     const key = `${node1}-${node2}`;
