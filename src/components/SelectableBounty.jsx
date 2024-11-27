@@ -62,7 +62,7 @@ const SelectableBounty = ({
 
   return (
     <div
-      className={`cursor-pointer group relative w-full min-h-[60px] border dark:border-zinc-700 dark:text-zinc-200 p-2 rounded block hover:text-blue-500 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-zinc-800 select-none`}
+      className={`cursor-pointer group relative w-full min-h-[60px] border dark:border-zinc-800 dark:text-zinc-200 p-2 rounded-sm block hover:text-blue-500 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-zinc-800 select-none`}
       onClick={() => {
         if (count === 0) {
           setCount(bountyKey, 1);
@@ -78,7 +78,7 @@ const SelectableBounty = ({
           src={`https://brightershoreswiki.org/images/${bounty.name.replace(/ /g, "_")}.png`}
           onError={(e) => (e.currentTarget.src = "/unknown-transparent.png")}
           alt="carrots"
-          className="rounded-md"
+          className="rounded-sm"
         />
         <div className="ml-4 text-lg">{bounty.name}</div>
         {count > 0 && canSelectMoreThanOne ? (
