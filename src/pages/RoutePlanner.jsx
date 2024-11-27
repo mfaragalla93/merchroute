@@ -29,7 +29,7 @@ const formatTime = (input) => {
 
 const RoutePlanner = () => {
   const [loading, setLoading] = useState(true);
-  const [result, setResult] = useState({});
+  const [results, setResults] = useState([]);
 
   const { selectedBounties: bounties } = useBounties("bountiesV2");
   const { selectedBounties: availableBounties } = useBounties(
@@ -42,7 +42,7 @@ const RoutePlanner = () => {
   useEffect(() => {
     worker.onmessage = (event) => {
       console.log("result", event.data);
-      setResult(event.data);
+      setResults(event.data);
       setLoading(false);
     };
   }, []);
@@ -52,7 +52,7 @@ const RoutePlanner = () => {
       return;
     }
 
-    setResult({});
+    setResults([]);
     setLoading(true);
 
     const currentBountyKeys = [];
@@ -87,6 +87,14 @@ const RoutePlanner = () => {
     battleOfFortuneholdCompleted,
     roundTrip,
   ]);
+
+  const result = useMemo(() => {
+    if (!results.length) {
+      return {};
+    }
+
+    return results[0];
+  }, [results]);
 
   const bountiesToAbandon = useMemo(() => {
     if (Object.keys(result).length === 0) {

@@ -49,7 +49,9 @@ class Pathfinder {
    * @param {number} detectiveLevel Level of players Detective skill, used to determine any additional rooms which can be accessed
    * @param {boolean} battleOfFortuneholdCompleted Whether the player has completed the Battle of Fortunehold quest which unlocks an additional room
    * @param {boolean} roundTrip Whether to return to the bounty board after completing all deliveries
-   * @returns {FindBestBountiesResult[]} An array of objects containing the best bounties to complete
+   * @param {number} [numResults=5] (Optional) The number of bounty combinations return.
+   *  If there are less than 5 possible combinations, all will be returned
+   * @returns {FindBestBountiesResult[]} An array of objects containing the top {@link numResults} best bounties to complete
    */
   findBestBounties(
     currentBounties,
@@ -57,13 +59,9 @@ class Pathfinder {
     detectiveLevel,
     battleOfFortuneholdCompleted,
     roundTrip,
+    numResults = 5,
   ) {
-    const result = {
-      bounties: [],
-      actions: [],
-      distance: Number.MAX_SAFE_INTEGER,
-      experience: 0,
-    };
+    let results = [];
 
     const gps = new GPS(detectiveLevel, battleOfFortuneholdCompleted);
 
@@ -83,25 +81,36 @@ class Pathfinder {
     console.log(`Finding best route amongst ${combos.length} possibilities`);
 
     combos.forEach((combo) => {
+      const max = results.length
+        ? Math.max(...results.map((result) => result.distance))
+        : Number.MAX_SAFE_INTEGER;
+
       const experience = combo.reduce(
         (acc, bounty) => acc + bountyData[bounty].exp,
         0,
       );
 
-      const route = this.findBestRoute(combo, gps, result.distance, roundTrip);
+      const route = this.findBestRoute(combo, gps, max, roundTrip);
       if (route === null) {
-        // Route was not shorter than the current best
+        // Route was not shorter than any of the current results
         return;
       }
 
-      result.distance = route.distance;
-      result.bounties = combo;
-      result.actions = route.actions;
-      result.experience = experience;
+      if (results.length === numResults) {
+        results = results.filter((result) => result.distance < max);
+      }
+
+      results.push({
+        bounties: combo,
+        actions: route.actions,
+        distance: route.distance,
+        experience,
+      });
     });
 
-    console.log(`Best route found in ${Date.now() - startTimestamp}ms`);
-    return result;
+    results.sort((a, b) => a.distance - b.distance);
+    console.log(`Best routes found in ${Date.now() - startTimestamp}ms`);
+    return results;
   }
 
   /**
