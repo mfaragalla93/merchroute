@@ -206,6 +206,7 @@ class Pathfinder {
       if (this.#deliveriesCompleted(bountyStates)) {
         if (roundTrip && currentNode !== bountyBoard.node) {
           distance += gps.distance(currentNode, bountyBoard.node).distance;
+          this.#addTravelSteps(gps, actions, currentNode, bountyBoard.node);
           actions.push({
             type: "Return",
             location: bountyBoard.name,
