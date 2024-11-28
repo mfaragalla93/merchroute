@@ -13,6 +13,7 @@ export const DarkModeProvider = ({ children }) => {
     if (localTheme === null) {
       const darkMode = getSystemDarkModePreference();
       localStorage.setItem("darkMode", JSON.stringify(darkMode));
+      return darkMode;
     }
 
     return JSON.parse(localTheme);

@@ -7,17 +7,11 @@ import pathfinder from "./pathfinder.js";
  * @param event Event data passed as parameters to {@link pathfinder.findBestBounties}.
  */
 onmessage = (event) => {
-  const {
-    currentBounties,
-    availableBounties,
-    detectiveLevel,
-    battleOfFortuneholdCompleted,
-    roundTrip,
-  } = event.data;
+  const { bounties, detectiveLevel, battleOfFortuneholdCompleted, roundTrip } =
+    event.data;
 
   const result = pathfinder.findBestBounties(
-    currentBounties,
-    availableBounties,
+    bounties,
     detectiveLevel,
     battleOfFortuneholdCompleted,
     roundTrip,

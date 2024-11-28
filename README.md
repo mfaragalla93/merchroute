@@ -14,10 +14,10 @@ calculate the best route from all possible bounties and let you know which ones 
 ## Time estimations
 The best routes are calculated by time and not by distance. ETAs are provided for each step of the route and are a 
 great way to gauge the accuracy of the tool. If you find these estimations are off, then please let us know on our
-[Discord](https://discord.gg/fcSYv9GPwJ) server so that we can improve our algorithm.
+[DiscordIcon](https://discord.gg/fcSYv9GPwJ) server so that we can improve our algorithm.
 
 ## Contributing
-You do not need to be a developer to contribute to the tool. Join our [Discord](https://discord.gg/fcSYv9GPwJ) server to help in various ways:
+You do not need to be a developer to contribute to the tool. Join our [DiscordIcon](https://discord.gg/fcSYv9GPwJ) server to help in various ways:
 
 - The `#data-needed` channel includes specific things we need help with, such as item images or information about den raid rooms.
 - Post any routes which are faster than what the tool suggests in `#better-routes`
@@ -54,7 +54,7 @@ These numbers are referenced on the following map which I have created (15mb ima
 
 These numbers are chosen arbitrarily, I have just incremented them as I went along. I use GIMP to modify this image
 when I need to add new nodes, the layers help me keep track of the nodes. If you are interested in the GIMP file, 
-let me know on [Discord](https://discord.gg/fcSYv9GPwJ) and I can provide it.
+let me know on [DiscordIcon](https://discord.gg/fcSYv9GPwJ) and I can provide it.
 
 ## Running the project
 

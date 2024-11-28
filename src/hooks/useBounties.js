@@ -1,12 +1,14 @@
 import { bounties } from "../algorithm/bounties.js";
 import { useEffect, useMemo, useState } from "react";
+import { bountyBoard } from "../algorithm/nodes.js";
 
 const defaultBountyState = Object.fromEntries(
   Object.entries(bounties).map(([key, value]) => [
     key,
     {
       name: value.name,
-      selectedCount: 0,
+      count: 0,
+      bountyBoard: false,
     },
   ]),
 );
@@ -32,19 +34,27 @@ const useBounties = (key) => {
     }));
   }, [bountyObj]);
 
-  const selectedBounties = useMemo(() => {
-    return bounties.filter((bounty) => bounty.selectedCount > 0);
+  const selected = useMemo(() => {
+    return bounties.filter((bounty) => bounty.count > 0);
   }, [bounties]);
 
-  const selectedBountiesCount = useMemo(() => {
-    return selectedBounties.reduce(
-      (acc, bounty) => acc + bounty.selectedCount,
+  const count = useMemo(() => {
+    return selected.reduce((acc, bounty) => acc + bounty.count, 0);
+  }, [selected]);
+
+  const bountyBoard = useMemo(() => {
+    return bounties.filter((bounty) => bounty.bountyBoard);
+  }, [bounties]);
+
+  const bountyBoardCount = useMemo(() => {
+    return bountyBoard.reduce(
+      (acc, bounty) => (bounty.bountyBoard ? acc + 1 : acc),
       0,
     );
-  }, [selectedBounties]);
+  }, [bountyBoard]);
 
   const setCount = (key, value) => {
-    if (selectedBountiesCount === 6 && bountyObj[key].selectedCount < value) {
+    if (count === 6 && bountyObj[key].count < value) {
       return;
     }
 
@@ -52,21 +62,68 @@ const useBounties = (key) => {
       ...bountyObj,
       [key]: {
         ...bountyObj[key],
-        selectedCount: value,
+        count: value,
       },
     }));
   };
 
-  const reset = () => {
-    setBountyObj(defaultBountyState);
+  const toggleBountyBoard = (key, checked) => {
+    setBountyObj((bountyObj) => ({
+      ...bountyObj,
+      [key]: {
+        ...bountyObj[key],
+        bountyBoard: checked,
+      },
+    }));
+  };
+
+  const increment = (key) => {
+    setCount(key, bountyObj[key].count + 1);
+  };
+
+  const decrement = (key) => {
+    setCount(key, bountyObj[key].count - 1);
+  };
+
+  const resetBounties = () => {
+    setBountyObj((bountyObj) =>
+      Object.fromEntries(
+        Object.entries(bountyObj).map(([key, value]) => [
+          key,
+          {
+            ...value,
+            count: 0,
+          },
+        ]),
+      ),
+    );
+  };
+
+  const resetBountyBoard = () => {
+    setBountyObj((bountyObj) =>
+      Object.fromEntries(
+        Object.entries(bountyObj).map(([key, value]) => [
+          key,
+          {
+            ...value,
+            bountyBoard: false,
+          },
+        ]),
+      ),
+    );
   };
 
   return {
     bounties,
-    selectedBounties,
-    selectedBountiesCount,
-    setCount,
-    reset,
+    selected,
+    count,
+    bountyBoard,
+    bountyBoardCount,
+    increment,
+    decrement,
+    toggleBountyBoard,
+    resetBounties,
+    resetBountyBoard,
   };
 };
 

@@ -1,7 +1,7 @@
 import ExternalLink from "./ExternalLink.jsx";
-import Github from "../icons/Github.jsx";
+import GithubIcon from "../icons/GithubIcon.jsx";
 import Menu from "../icons/Menu.jsx";
-import Discord from "../icons/Discord.jsx";
+import DiscordIcon from "../icons/DiscordIcon.jsx";
 
 const Header = ({ setMobileMenuShown }) => {
   return (
@@ -31,18 +31,18 @@ const Header = ({ setMobileMenuShown }) => {
           <div className="flex items-center place-content-center gap-4">
             <ExternalLink
               to="https://discord.gg/fcSYv9GPwJ"
-              title="Join our Discord server"
+              title="Join our DiscordIcon server"
             >
               <div className="p-1 hover:bg-gray-200 dark:hover:bg-zinc-700 cursor-pointer flex justify-center place-content-center rounded">
-                <Discord className="w-7 h-7 text-black dark:text-white" />
+                <DiscordIcon className="w-7 h-7 text-black dark:text-white" />
               </div>
             </ExternalLink>
             <ExternalLink
               to="https://github.com/bricefrisco/brighter-shores-routefinder"
-              title="View source code (Github)"
+              title="View source code (GithubIcon)"
             >
               <div className="p-1 hover:bg-gray-200 dark:hover:bg-zinc-700 cursor-pointer flex justify-center place-content-center rounded">
-                <Github className="w-7 h-7 text-black dark:text-white" />
+                <GithubIcon className="w-7 h-7 text-black dark:text-white" />
               </div>
             </ExternalLink>
           </div>

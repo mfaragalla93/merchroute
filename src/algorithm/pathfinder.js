@@ -9,7 +9,7 @@ import { bounties as bountyData } from "./bounties.js";
 /**
  * @typedef {Object} Action
  * @property {string} type The type of action to take. E.g, "buy", "sell", "teleport", "walk"
- * @property {string} item (Optional) The item to buy or sell
+ * @property {string} [item] (Optional) The item to buy or sell
  * @property {string} location The location to buy, sell, teleport, or walk to
  * @property {number} distance The total distance (time in seconds) it will take to complete the action
  *
@@ -40,11 +40,8 @@ class Pathfinder {
 
   /**
    * Determines which deliveries should be made based on current and available deliveries
-   * @param {string[]} currentBounties An array of keys from {@link bountyData}
+   * @param {string[]} bounties An array of keys from {@link bountyData}
    *   These are be the bounties the player has already accepted
-   *   E.g, [CARROTS, SOAP, ...]
-   * @param {string[]} [availableBounties] (Optional) An array of keys from {@link bountyData}
-   *   These are the bounties the player has available but not yet accepted on the bounty board
    *   E.g, [CARROTS, SOAP, ...]
    * @param {number} detectiveLevel Level of players Detective skill, used to determine any additional rooms which can be accessed
    * @param {boolean} battleOfFortuneholdCompleted Whether the player has completed the Battle of Fortunehold quest which unlocks an additional room
@@ -54,8 +51,7 @@ class Pathfinder {
    * @returns {FindBestBountiesResult[]} An array of objects containing the top {@link numResults} best bounties to complete
    */
   findBestBounties(
-    currentBounties,
-    availableBounties,
+    bounties,
     detectiveLevel,
     battleOfFortuneholdCompleted,
     roundTrip,
@@ -65,8 +61,7 @@ class Pathfinder {
 
     const gps = new GPS(detectiveLevel, battleOfFortuneholdCompleted);
 
-    const allBounties = [...currentBounties, ...availableBounties];
-    const combos = combinations(allBounties, Math.min(allBounties.length, 6));
+    const combos = combinations(bounties, Math.min(bounties.length, 6));
 
     // Sort the combinations by the number of overlapping merchants that they have.
     // This is done because the best combination is likely to have more overlapping merchants.
@@ -81,9 +76,10 @@ class Pathfinder {
     console.log(`Finding best route amongst ${combos.length} possibilities`);
 
     combos.forEach((combo) => {
-      const max = results.length
-        ? Math.max(...results.map((result) => result.distance))
-        : Number.MAX_SAFE_INTEGER;
+      const max =
+        results.length === 5
+          ? Math.max(...results.map((result) => result.distance))
+          : Number.MAX_SAFE_INTEGER;
 
       const experience = combo.reduce(
         (acc, bounty) => acc + bountyData[bounty].exp,
@@ -235,7 +231,7 @@ class Pathfinder {
           distance += gps.distance(currentNode, bountyBoard.node).distance;
           this.#addTravelSteps(gps, actions, currentNode, bountyBoard.node);
           actions.push({
-            type: "Return",
+            type: "return",
             location: bountyBoard.name,
             distance,
           });

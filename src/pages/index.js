@@ -24,7 +24,7 @@ const pages = [
     category: categories[1],
   },
   {
-    title: "Route Planner",
+    title: "Route Selection",
     path: "/route-planner",
     component: RoutePlanner,
     category: categories[1],
