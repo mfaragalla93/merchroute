@@ -25,9 +25,12 @@ import {
   CheckboxField,
   CheckboxGroup,
 } from "../components/catalyst/checkbox.jsx";
+import OCR from "../components/OCR.jsx";
 
 const Selection = () => {
   const [filter, setFilter] = useState("");
+  const [ocr, setOcr] = useState(false);
+
   const {
     bounties,
     count,
@@ -75,10 +78,11 @@ const Selection = () => {
               onChange={(e) => setFilter(e.target.value)}
             />
           </InputGroup>
-          <Button color="light">
+          <Button color="light" onClick={() => setOcr(true)}>
             <Badge color="green">New</Badge>
             Detect with OCR
           </Button>
+          <OCR open={ocr} setOpen={setOcr} />
         </div>
 
         <Button color="blue" href="/route">

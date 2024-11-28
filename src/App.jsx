@@ -69,55 +69,53 @@ const navItems = [
 
 const App = () => {
   const { pathname } = useLocation();
-  const { darkMode, toggle } = useDarkModeContext();
+  const { toggle } = useDarkModeContext();
 
   return (
-    <div className={darkMode ? "dark" : null}>
-      <SidebarLayout
-        sidebar={
-          <Sidebar>
-            <SidebarHeader>
-              <SidebarItem>
-                <Avatar src="favicon-32x32.png" />
-                <SidebarLabel>RouteFinder</SidebarLabel>
-              </SidebarItem>
-            </SidebarHeader>
-            <SidebarBody>
-              {navItems.map(({ heading, items }) => (
-                <SidebarSection key={heading || "Default"}>
-                  <SidebarHeading>{heading}</SidebarHeading>
-                  {items.map(({ label, url, icon, external }) => (
-                    <SidebarItem
-                      key={label}
-                      href={url}
-                      target={external && "_blank"}
-                      rel={external && "noopener noreferrer"}
-                      current={url === pathname}
-                    >
-                      {icon}
-                      <SidebarLabel>{label}</SidebarLabel>
-                    </SidebarItem>
-                  ))}
-                </SidebarSection>
-              ))}
-            </SidebarBody>
-            <SidebarFooter>
-              <SidebarItem onClick={toggle}>
-                <MoonIcon />
-                <SidebarLabel>Dark mode</SidebarLabel>
-              </SidebarItem>
-            </SidebarFooter>
-          </Sidebar>
-        }
-      >
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/select" element={<Selection />} />
-          <Route path="/route" element={<Plan />} />
-        </Routes>
-      </SidebarLayout>
-    </div>
+    <SidebarLayout
+      sidebar={
+        <Sidebar>
+          <SidebarHeader>
+            <SidebarItem>
+              <Avatar src="favicon-32x32.png" />
+              <SidebarLabel>RouteFinder</SidebarLabel>
+            </SidebarItem>
+          </SidebarHeader>
+          <SidebarBody>
+            {navItems.map(({ heading, items }) => (
+              <SidebarSection key={heading || "Default"}>
+                <SidebarHeading>{heading}</SidebarHeading>
+                {items.map(({ label, url, icon, external }) => (
+                  <SidebarItem
+                    key={label}
+                    href={url}
+                    target={external && "_blank"}
+                    rel={external && "noopener noreferrer"}
+                    current={url === pathname}
+                  >
+                    {icon}
+                    <SidebarLabel>{label}</SidebarLabel>
+                  </SidebarItem>
+                ))}
+              </SidebarSection>
+            ))}
+          </SidebarBody>
+          <SidebarFooter>
+            <SidebarItem onClick={toggle}>
+              <MoonIcon />
+              <SidebarLabel>Dark mode</SidebarLabel>
+            </SidebarItem>
+          </SidebarFooter>
+        </Sidebar>
+      }
+    >
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/select" element={<Selection />} />
+        <Route path="/route" element={<Plan />} />
+      </Routes>
+    </SidebarLayout>
   );
 };
 

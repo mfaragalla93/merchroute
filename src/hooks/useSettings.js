@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
 const defaultSettings = {
-  merchantingLevel: 100, // Intentionally defaulted for now since higher levels have no images yet.
   detectiveLevel: 0,
   battleOfFortuneholdCompleted: false,
   roundTrip: true,
@@ -15,10 +14,6 @@ const useSettings = () => {
 
   useEffect(() => {
     localStorage.setItem("settings", JSON.stringify(settings));
-  }, [settings]);
-
-  const merchantingLevel = useMemo(() => {
-    return settings.merchantingLevel;
   }, [settings]);
 
   const detectiveLevel = useMemo(() => {
@@ -36,13 +31,6 @@ const useSettings = () => {
 
     return settings.roundTrip;
   }, [settings]);
-
-  const setMerchantingLevel = (merchantingLevel) => {
-    setSettings((settings) => ({
-      ...settings,
-      merchantingLevel: merchantingLevel === "" ? "" : Number(merchantingLevel),
-    }));
-  };
 
   const setDetectiveLevel = (detectiveLevel) => {
     setSettings((settings) => ({
@@ -66,11 +54,9 @@ const useSettings = () => {
   };
 
   return {
-    merchantingLevel,
     detectiveLevel,
     battleOfFortuneholdCompleted,
     roundTrip,
-    setMerchantingLevel,
     setDetectiveLevel,
     setBattleOfFortuneholdCompleted,
     setRoundTrip,

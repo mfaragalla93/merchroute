@@ -31,11 +31,9 @@ const additionalRooms = [
 
 const Settings = () => {
   const {
-    merchantingLevel,
     detectiveLevel,
     battleOfFortuneholdCompleted,
     roundTrip,
-    setMerchantingLevel,
     setDetectiveLevel,
     setBattleOfFortuneholdCompleted,
     setRoundTrip,
