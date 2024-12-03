@@ -62,7 +62,7 @@ const SelectableBounty = ({
 
   const handleBountyClick = (e) => {
     if (e.type === "click") {
-      if (count === 0) {
+      if (count === 0 || !canSelectMoreThanOne) {
         setCount(bountyKey, 1);
       } else {
         setCount(bountyKey, count + 1);
