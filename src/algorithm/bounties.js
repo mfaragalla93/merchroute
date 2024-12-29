@@ -251,6 +251,42 @@ export const bounties = {
     seller: markets.FRANCESCAS_FRUIT_STALL,
     buyer: markets.TEXTILES_STALL,
   },
+  PRECISE_POCKET_WATCH: {
+    level: 233,
+    name: "Precise Pocket Watch",
+    seller: markets.SNILCHS_WATCHES,
+    buyer: markets.GREENGROCERS,
+  },
+  SILK: {
+    level: 255,
+    name: "Silk",
+    seller: markets.TEXTILES_STALL,
+    buyer: markets.HERMARS_HOMEWARE,
+  },
+  OLD_RARG: {
+    level: 272,
+    name: "Old Rarg",
+    seller: markets.CHEESE_SHOP,
+    buyer: markets.CHEF,
+  },
+  FARGUST_WINE: {
+    level: 300,
+    name: "Fargust Wine",
+    seller: markets.JENNALERS_WINES,
+    buyer: markets.BERTS_GALLERY,
+  },
+  STRIPED_VASE: {
+    level: 317,
+    name: "Striped Vase",
+    seller: markets.VASE_STALL,
+    buyer: markets.BERTS_GALLERY,
+  },
+  TEA_LIGHTS: {
+    level: 339,
+    name: "Tea Lights",
+    seller: markets.CANDICES_CANDLES,
+    buyer: markets.FORTUNEHOLD_FARM,
+  },
 };
 
 /**
